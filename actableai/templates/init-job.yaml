@@ -1,0 +1,64 @@
+{{- if .Values.init.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "actableai.fullname" . }}-init-db
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+spec:
+  template:
+    metadata:
+      name: {{ include "actableai.fullname" . }}-init-db
+    spec:
+      {{- if or (.Values.serviceAccount.create) (.Values.serviceAccountName) }}
+      serviceAccountName: {{ include "actableai.serviceAccountName" . }}
+      {{- end }}
+      {{- if .Values.init.initContainers }}
+      initContainers:
+      {{-  tpl (toYaml .Values.init.initContainers) . | nindent 6 }}
+      {{- end }}
+      containers:
+      - name: {{ include "actableai.fullname" . }}-init-db
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        env:
+        {{ if .Values.extraEnv }}
+          {{- range $key, $value := .Values.extraEnv }}
+          - name: {{ $key | quote}}
+            value: {{ $value | quote }}
+          {{- end }}
+        {{- end }}
+        envFrom:
+          - secretRef:
+              name: {{ tpl .Values.envFromSecret . | quote }}
+          {{- range .Values.envFromSecrets }}
+          - secretRef:
+              name: {{ tpl . $ | quote }}
+          {{- end }}
+        volumeMounts:
+          - name: superset-config
+            mountPath: {{ .Values.configMountPath | quote }}
+            readOnly: true
+        {{- if .Values.extraConfigs }}
+          - name: superset-extra-config
+            mountPath: {{ .Values.extraConfigMountPath | quote }}
+            readOnly: true
+        {{- end }}
+        command: {{  tpl (toJson .Values.init.command) . }}
+        resources:
+          {{- toYaml .Values.init.resources | nindent 10 }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml .Values.imagePullSecrets | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: superset-config
+          secret:
+            secretName: {{ tpl .Values.configFromSecret . }}
+        {{- if .Values.extraConfigs }}
+        - name: superset-extra-config
+          configMap:
+            name: {{ include "actableai.fullname" . }}-extra-config
+        {{- end }}
+      restartPolicy: Never
+{{- end }}

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "actableai.fullname" . }}-env
+  labels:
+    {{- include "actableai.labels" . | nindent 4 }}
+data:
+  {{- if .Values.featureConfigs }}
+  {{- range $key, $value := .Values.featureConfigs }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  {{- end }}
+  {{- if .Values.endpointConfigs }}
+  {{- range $key, $value := .Values.endpointConfigs }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  {{- end }}

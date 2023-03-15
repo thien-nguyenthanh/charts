@@ -1,0 +1,15 @@
+apiVersion: v2
+name: actableai
+description: AI as a service for Data Analytics & Optimization
+type: application
+version: 1.0.0
+appVersion: "1.16.0"
+dependencies:
+  - name: postgresql
+    version: 10.2.0
+    repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    condition: postgresql.enabled
+  - name: redis
+    version: 12.3.0
+    repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    condition: redis.enabled
