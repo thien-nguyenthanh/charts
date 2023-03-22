@@ -1,0 +1,23 @@
+apiVersion: v1
+entries:
+  actableai:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2023-03-22T04:49:25.935125431Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+      version: 10.2.0
+    - condition: redis.enabled
+      name: redis
+      repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+      version: 12.3.0
+    description: AI as a service for Data Analytics & Optimization
+    digest: 0c84857ec580d733cb86adb67f41eb9f731298f72d07febc980e402219b3999c
+    name: actableai
+    type: application
+    urls:
+    - https://github.com/thien-nguyenthanh/charts/releases/download/actableai-1.0.1/actableai-1.0.1.tgz
+    version: 1.0.1
+generated: "2023-03-22T04:49:25.935158031Z"
