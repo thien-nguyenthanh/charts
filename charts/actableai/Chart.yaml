@@ -2,7 +2,7 @@ apiVersion: v2
 name: actableai
 description: AI as a service for Data Analytics & Optimization
 type: application
-version: 1.0.1
+version: 1.0.2
 appVersion: "1.16.0"
 dependencies:
   - name: postgresql
